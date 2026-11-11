@@ -6,8 +6,11 @@
 @page { size: 297mm 420mm; margin: 0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root { --navy:#0b1b3a; --navy2:#13306b; --teal:#0e7490; --teal2:#14b8a6; --amber:#f59e0b; --ink:#0f1d33; --mut:#53627a; --line:#dbe3ee; --bg:#eef3f9; }
-body { width:297mm; height:420mm; overflow:hidden; background:var(--bg); color:var(--ink); font:10px/1.42 Inter, 'Segoe UI', Arial, sans-serif;
+body { width:297mm; height:420mm; margin:0 auto; background:var(--bg); color:var(--ink); font:10px/1.42 Inter, 'Segoe UI', Arial, sans-serif;
        -webkit-print-color-adjust:exact; print-color-adjust:exact; display:flex; flex-direction:column; }
+html { background:#cfd8e3; }
+@media screen { body { margin:8mm auto; box-shadow:0 10px 40px rgba(15,29,51,.25); } }
+@media print { html { background:none; } body { overflow:hidden; margin:0; box-shadow:none; } }
 h1,h2,h3,.kn,.donut span { font-family:'Plus Jakarta Sans', Inter, sans-serif; }
 a { color:var(--teal); text-decoration:none; }
 code { font:8.6px Consolas, monospace; background:#e6edf6; padding:0 3px; border-radius:3px; }
