@@ -9,7 +9,8 @@ Chatbot RAG (*Retrieval-Augmented Generation*) que responde dudas sobre **derech
 ## Entregables
 
 - **Notebook ejecutado:** [ACA2_Ventas_RAG_Chatbot.ipynb](ACA2_Ventas_RAG_Chatbot.ipynb)
-- **Aplicación:** [app.py](app.py) + [rag_core.py](rag_core.py)
+- **App desplegada (Streamlit Cloud):** https://aca2ventasragchatbot-k2aghxqetdm8zntwbztzek.streamlit.app
+- **Código de la aplicación:** [app.py](app.py) + [rag_core.py](rag_core.py)
 - **Póster A3:** [poster/Poster_ACA2_Ventas_RAG.pdf](poster/Poster_ACA2_Ventas_RAG.pdf)
 - **Video de sustentación:** pendiente
 
