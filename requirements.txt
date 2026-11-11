@@ -1,3 +1,6 @@
+# PyTorch solo CPU: evita descargar ~2 GB de librerías CUDA en Streamlit Cloud
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
 streamlit>=1.50
 qdrant-client>=1.12
 sentence-transformers>=3.0
