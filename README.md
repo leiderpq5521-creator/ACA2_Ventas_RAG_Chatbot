@@ -6,6 +6,13 @@
 
 Chatbot RAG (*Retrieval-Augmented Generation*) que responde dudas sobre **derecho de retracto, devoluciones, reversión del pago, garantía legal e información obligatoria en tiendas en línea**, y sobre **productos con alta tasa de devolución**. Cada respuesta se fundamenta en la base vectorial construida en el ACA 1 y cita sus fuentes `[n]`.
 
+## Entregables
+
+- **Notebook ejecutado:** [ACA2_Ventas_RAG_Chatbot.ipynb](ACA2_Ventas_RAG_Chatbot.ipynb)
+- **Aplicación:** [app.py](app.py) + [rag_core.py](rag_core.py)
+- **Póster A3:** [poster/Poster_ACA2_Ventas_RAG.pdf](poster/Poster_ACA2_Ventas_RAG.pdf)
+- **Video de sustentación:** pendiente
+
 ## Arquitectura
 
 ```
