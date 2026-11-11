@@ -1,9 +1,36 @@
+# Identidad visual de VentasBot (misma paleta que el póster):
+# azul marino institucional + teal de acción + ámbar de acento.
 [theme]
-primaryColor = "#1f5fa8"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f1f5fb"
-textColor = "#1b2433"
-font = "sans serif"
+base = "light"
+primaryColor = "#0e7490"
+backgroundColor = "#f7f9fc"
+secondaryBackgroundColor = "#eaf0f7"
+textColor = "#0f1d33"
+linkColor = "#0e7490"
+borderColor = "#d5deea"
+showWidgetBorder = true
+baseRadius = "0.7rem"
+buttonRadius = "full"
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+headingFont = "Plus Jakarta Sans:https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+headingFontWeights = [800, 700, 700, 600, 600, 600]
+metricValueFontWeight = 700
+showSidebarBorder = false
+chartCategoricalColors = ["#0e7490", "#f59e0b", "#13306b", "#22c55e", "#ef4444", "#8b5cf6"]
+dataframeHeaderBackgroundColor = "#13306b"
+dataframeHeaderTextColor = "#ffffff"
+greenColor = "#16a34a"
+orangeColor = "#f59e0b"
+blueColor = "#0e7490"
+
+[theme.sidebar]
+backgroundColor = "#0b1b3a"
+secondaryBackgroundColor = "#13306b"
+textColor = "#e6edf7"
+borderColor = "#24427a"
+primaryColor = "#fbbf24"
+linkColor = "#fde68a"
+codeBackgroundColor = "#13306b"
 
 [server]
 maxUploadSize = 20

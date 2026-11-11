@@ -2,12 +2,17 @@
 VentasBot · Chatbot RAG de soporte y analítica comercial (ACA 2 · Computación en la Nube · CUN)
 Ejecutar:  streamlit run app.py
 """
+from pathlib import Path
+
 import pandas as pd
 import streamlit as st
 
 import rag_core as rc
 
-st.set_page_config(page_title="VentasBot · RAG Ventas", page_icon=":material/storefront:", layout="wide")
+ASSETS = Path(__file__).with_name("assets")
+st.set_page_config(page_title="VentasBot · RAG Ventas", page_icon=str(ASSETS / "icono.svg"), layout="wide")
+st.logo(str(ASSETS / "logo.svg"), icon_image=str(ASSETS / "icono.svg"), size="large")
+AVATAR = {"user": ":material/person:", "assistant": str(ASSETS / "icono.svg")}
 
 # ---------------------------------------------------------------------------
 # Recursos cacheados (cliente Qdrant y modelo de embeddings se crean una sola vez)
@@ -44,9 +49,10 @@ if "mensajes" not in st.session_state:
 # ---------------------------------------------------------------------------
 disp = rc.proveedores_disponibles()
 with st.sidebar:
-    st.header(":material/tune: Configuración")
+    st.caption("Chatbot RAG de soporte al cliente y analítica de comercio electrónico.")
+    st.subheader(":material/tune: Modelo de lenguaje")
     opciones = [p for p in rc.PROVEEDORES if disp[p]] or list(rc.PROVEEDORES)
-    proveedor = st.selectbox("Modelo de lenguaje", opciones, format_func=lambda p: rc.NOMBRES_PROVEEDOR[p])
+    proveedor = st.selectbox("Proveedor", opciones, format_func=lambda p: rc.NOMBRES_PROVEEDOR[p])
     modelo = st.text_input("Modelo", value=rc.PROVEEDORES[proveedor][1])
     if not disp[proveedor]:
         st.warning(f"Agrega {rc.PROVEEDORES[proveedor][0]} al archivo .env o a los secrets.", title="Falta la API key")
@@ -61,25 +67,35 @@ with st.sidebar:
                            help="Fragmentos por debajo del umbral no se envían al LLM.")
         turnos = st.slider("Turnos de memoria", 0, 8, rc.DEFAULTS["turnos_historial"])
 
-    st.divider()
-    st.caption("Base vectorial")
-    c1, c2 = st.columns(2)
-    c1.metric("Vectores", f"{est['puntos']:,}")
-    c2.metric("Dimensión", est["dimension"])
-    st.caption(f"Colección `{est['coleccion']}` · métrica {est['metrica']} · estado {est['estado']}")
-    if st.button("Limpiar conversación", icon=":material/delete_sweep:", width="stretch"):
+    st.subheader(":material/database: Base vectorial")
+    with st.container(horizontal=True):
+        st.badge("Qdrant Cloud", icon=":material/cloud_done:", color="green")
+        st.badge("activa" if est["estado"] == "green" else est["estado"], icon=":material/check_circle:",
+                 color="green" if est["estado"] == "green" else "orange")
+    st.caption(f"Colección `{est['coleccion']}` · {est['puntos']:,} vectores · {est['dimension']} d · "
+               f"{est['metrica'].lower()}")
+    if st.button("Nueva conversación", icon=":material/add_comment:", width="stretch"):
         st.session_state.mensajes = []
         st.rerun()
+    st.divider()
+    st.caption("**ACA 2 · Computación en la Nube · CUN**  \nJuan Guillermo Ángel Jaramillo  \n"
+               "Luis Bernardo Correa Restrepo  \nMaría Alejandra Manga Betancourt")
 
 # ---------------------------------------------------------------------------
 # Encabezado y navegación
 # ---------------------------------------------------------------------------
-st.title(":material/storefront: VentasBot")
-st.caption("Chatbot RAG de soporte al cliente y analítica comercial · Pilar Ventas · "
-           "Qdrant Cloud + LLM · Especialización en IA, CUN")
+with st.container(horizontal=True):
+    st.badge("Pilar Ventas", icon=":material/storefront:", color="orange")
+    st.badge(rc.NOMBRES_PROVEEDOR[proveedor].split(" (")[0], icon=":material/auto_awesome:", color="primary")
+    st.badge("Qdrant Cloud", icon=":material/cloud:", color="blue")
+    st.badge("Respuestas con citas", icon=":material/verified:", color="green")
+st.title("Asistente de ventas y consumo")
+st.markdown("Respuestas **fundamentadas en la norma colombiana y en los datos de ventas**, con cada fuente citada.")
 
-vista = st.segmented_control("Vista", ["Chat", "Gestión documental", "Explorador semántico"],
-                             default="Chat", label_visibility="collapsed")
+vista = st.segmented_control("Vista", [":material/forum: Chat", ":material/folder_open: Gestión documental",
+                                       ":material/travel_explore: Explorador semántico"],
+                             default=":material/forum: Chat", label_visibility="collapsed")
+vista = (vista or ":material/forum: Chat").split(": ", 1)[1]
 
 
 def mostrar_fragmentos(frs, usadas=()):
@@ -95,35 +111,48 @@ def mostrar_fragmentos(frs, usadas=()):
 # ---------------------------------------------------------------------------
 if vista == "Chat":
     if not st.session_state.mensajes:
-        st.info("Pregunta sobre derecho de retracto, devoluciones, reversión del pago, garantía legal o "
-                "productos con más devoluciones. Las respuestas citan la fuente entre corchetes.",
-                title="¿En qué te ayudo?", icon=":material/support_agent:")
+        with st.container(border=True):
+            st.markdown("#### :material/support_agent: ¿En qué te ayudo hoy?")
+            st.markdown("Consulta sobre **derecho de retracto, devoluciones, reversión del pago, garantía legal** "
+                        "o sobre los **productos con más devoluciones**. Cada respuesta cita su fuente "
+                        "entre corchetes, y puedes verificarla en *Ver fuentes*.")
+            with st.container(horizontal=True):
+                st.badge("Ley 1480 de 2011", icon=":material/gavel:", color="blue")
+                st.badge("Ley 2439 de 2024", icon=":material/gavel:", color="blue")
+                st.badge("Guía SIC", icon=":material/menu_book:", color="blue")
+                st.badge("UCI Online Retail · 300 productos", icon=":material/inventory_2:", color="orange")
+        st.caption("Prueba con una de estas preguntas")
         sugerencias = [
-            "¿En cuántos días puedo ejercer el derecho de retracto en una compra por internet?",
-            "¿Cuándo procede la reversión del pago y en qué plazo se devuelve el dinero?",
-            "¿Qué productos tienen alta tasa de devolución y qué norma aplica al reembolso?",
+            ":material/schedule: ¿En cuántos días puedo ejercer el derecho de retracto en una compra por internet?",
+            ":material/credit_card_off: ¿Cuándo procede la reversión del pago y en qué plazo se devuelve el dinero?",
+            ":material/assignment_return: ¿Qué productos tienen alta tasa de devolución y qué norma aplica al reembolso?",
         ]
         elegida = st.pills("Ejemplos", sugerencias, label_visibility="collapsed")
+        elegida = elegida.split(": ", 1)[1] if elegida else None
     else:
         elegida = None
 
     for m in st.session_state.mensajes:
-        with st.chat_message(m["role"]):
+        with st.chat_message(m["role"], avatar=AVATAR[m["role"]]):
             st.markdown(m["content"])
             if m["role"] == "assistant" and m.get("fragmentos"):
                 meta = m["meta"]
-                st.caption(f":material/smart_toy: {meta['modelo']} · recuperación {meta['ms_recuperacion']} ms · "
-                           f"LLM {meta['ms_llm']} ms · {len(m['fragmentos'])} fragmentos")
-                with st.popover("Ver fuentes", icon=":material/menu_book:"):
-                    mostrar_fragmentos(m["fragmentos"], meta["citas_usadas"])
+                with st.container(horizontal=True, vertical_alignment="center"):
+                    with st.popover("Ver fuentes", icon=":material/menu_book:"):
+                        mostrar_fragmentos(m["fragmentos"], meta["citas_usadas"])
+                    st.badge(f"{len(meta['citas_usadas'])} de {len(m['fragmentos'])} fuentes citadas",
+                             icon=":material/fact_check:", color="green")
+                    st.badge(f"Qdrant {meta['ms_recuperacion']} ms", icon=":material/bolt:", color="gray")
+                    st.badge(f"{meta['modelo']} · {meta['ms_llm'] / 1000:.1f} s", icon=":material/auto_awesome:",
+                             color="gray")
 
     pregunta = st.chat_input("Escribe tu pregunta…") or elegida
     if pregunta:
         historial = [{"role": m["role"], "content": m["content"]} for m in st.session_state.mensajes]
         st.session_state.mensajes.append({"role": "user", "content": pregunta})
-        with st.chat_message("user"):
+        with st.chat_message("user", avatar=AVATAR["user"]):
             st.markdown(pregunta)
-        with st.chat_message("assistant"):
+        with st.chat_message("assistant", avatar=AVATAR["assistant"]):
             with st.spinner("Buscando en la base vectorial y generando respuesta…"):
                 try:
                     r = rc.responder(pregunta, historial, proveedor=proveedor, modelo=modelo,
